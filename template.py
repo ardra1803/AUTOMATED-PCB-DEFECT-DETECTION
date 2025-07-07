@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import logging
 
-logging.basicConfig(level=logging.INFO,format='[%(asctime)s],(%message)s')
+logging.basicConfig(level=logging.INFO, format='[%(asctime)s], (%(message)s)')
 
 project_name = "PCBDEFECTDETECTION"
 
@@ -15,7 +15,7 @@ list_of_files = [
     f"{project_name}/components/data_validation.py",
     f"{project_name}/components/model_trainer.py",
     f"{project_name}/constant/__init__.py",
-    f"{project_name}/constant/training_pipeline/__init__.py"
+    f"{project_name}/constant/training_pipeline/__init__.py",
     f"{project_name}/constant/application.py",
     f"{project_name}/constant/config_entity.py",
     f"{project_name}/constant/artifacts_entity.py",
@@ -23,28 +23,40 @@ list_of_files = [
     f"{project_name}/logger/__init__.py",
     f"{project_name}/pipeline/__init__.py",
     f"{project_name}/pipeline/training_pipeline.py",
-    f"{project_name}/utils/__init__.py"
+    f"{project_name}/utils/__init__.py",
     f"{project_name}/utils/main_utils.py",
     "templates/index.html",
+    "research/trails.ipynb",
     "app.py",
     "Dockerfile",
     "requirements.txt",
     "setup.py",
     "test.py"
-] 
+]
+
+
 for filepath in list_of_files:
     filepath = Path(filepath)
-    filedir,filename = os.path.split(filepath)
-    if filedir!="":
-        os.makedirs(filedir,exist_ok=True)
-        logging.info(f"Creating directory:{filedir} for the file:{filename}")
+    filedir, filename = os.path.split(filepath)
+    
+    if filedir != "":
+        os.makedirs(filedir, exist_ok=True)
+        logging.info(f"Creating directory: {filedir} for the file: {filename}")
 
-    if (not os.path.exists(filename)) or (os.path.getsize(filename)==0):
-        with open(filepath,"w") as f:
-            pass
-            logging.info(f"Creating empty file:{filename}")
+    if (not os.path.exists(filepath)) or (os.path.getsize(filepath) == 0):
+        if filename == "trails.ipynb":
+            notebook_content = """{
+ "cells": [],
+ "metadata": {},
+ "nbformat": 4,
+ "nbformat_minor": 2
+}"""
+            with open(filepath, "w") as f:
+                f.write(notebook_content)
+            logging.info(f"Creating minimal Jupyter notebook: {filepath}")
+        else:
+            with open(filepath, "w") as f:
+                pass
+            logging.info(f"Creating empty file: {filepath}")
     else:
-        logging.info(f"{filename} is already created")
-
-
-
+        logging.info(f"{filepath} is already created")
