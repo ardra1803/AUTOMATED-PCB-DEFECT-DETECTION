@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import json
 import logging
 
 logging.basicConfig(level=logging.INFO, format='[%(asctime)s], (%(message)s)')
@@ -31,31 +32,31 @@ list_of_files = [
     "Dockerfile",
     "requirements.txt",
     "setup.py",
-    "test.py"
+    "test.py",
 ]
 
+basic_notebook_json = {
+    "cells": [],
+    "metadata": {},
+    "nbformat": 4,
+    "nbformat_minor": 5
+}
 
 for filepath in list_of_files:
     filepath = Path(filepath)
     filedir, filename = os.path.split(filepath)
-    
+
     if filedir != "":
         os.makedirs(filedir, exist_ok=True)
         logging.info(f"Creating directory: {filedir} for the file: {filename}")
 
     if (not os.path.exists(filepath)) or (os.path.getsize(filepath) == 0):
-        if filename == "trails.ipynb":
-            notebook_content = """{
- "cells": [],
- "metadata": {},
- "nbformat": 4,
- "nbformat_minor": 2
-}"""
-            with open(filepath, "w") as f:
-                f.write(notebook_content)
-            logging.info(f"Creating minimal Jupyter notebook: {filepath}")
+        if filename.endswith(".ipynb"):
+            with open(filepath, "w", encoding="utf-8") as f:
+                json.dump(basic_notebook_json, f, indent=2)
+            logging.info(f"Creating blank Jupyter notebook: {filepath}")
         else:
-            with open(filepath, "w") as f:
+            with open(filepath, "w", encoding="utf-8") as f:
                 pass
             logging.info(f"Creating empty file: {filepath}")
     else:
